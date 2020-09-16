@@ -28,7 +28,7 @@ namespace pizzaApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<PizzaContext>(opt =>
-                opt.UseInMemoryDatabase("PizzaOrder")
+                opt.UseInMemoryDatabase("PizzaContext")
             );
             services.AddControllers();
         }
