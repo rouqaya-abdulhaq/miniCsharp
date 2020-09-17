@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using pizzaApi.Models;
 
 namespace pizzaApi.Controllers
 {
@@ -13,9 +15,12 @@ namespace pizzaApi.Controllers
 
         private readonly ILogger<PizzaItemController> _logger;
 
-        public PizzaItemController(ILogger<PizzaItemController> logger)
+        private readonly PizzaContext _pizzaContext;
+
+        public PizzaItemController(ILogger<PizzaItemController> logger, PizzaContext pizzaContext)
         {
             _logger = logger;
+            _pizzaContext = pizzaContext;
         }
 
         [HttpGet]
@@ -25,9 +30,12 @@ namespace pizzaApi.Controllers
         }
 
         [HttpPost]
-        public string Post()
+        public async Task<IActionResult>  Post(PizaaItem pizzaItem)
         {
-            return "submitting the pizza ingredients";
+            await _pizzaContext.PizaaItems.AddAsync(pizzaItem);
+            await _pizzaContext.SaveChangesAsync();
+
+            return CreatedAtActionResult("Get", new {id = pizzaItem.OrderNumber}, pizzaItem);
         }
 
     }
