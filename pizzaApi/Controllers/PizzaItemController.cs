@@ -24,6 +24,12 @@ namespace pizzaApi.Controllers
         }
 
         [HttpGet]
+        public async  Task<ActionResult<IEnumerable<PizaaItem>>> GetPizzaItems()
+        {
+            return await _pizzaContext.PizaaItems.ToListAsync();
+        }
+
+        [HttpGet]
         public string Get()
         {
             return "loading the pizaa ingredients";
