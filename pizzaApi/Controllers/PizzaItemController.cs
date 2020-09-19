@@ -31,7 +31,7 @@ namespace pizzaApi.Controllers
             {
                 return NotFound();
             }
-            return pizzas;
+            return Ok(pizzas);
         }
 
         [HttpGet]
@@ -41,16 +41,25 @@ namespace pizzaApi.Controllers
                                     select p;
 
             var pizzaOrder = pizzaOrders.Where(p => p.OrderNumber == orderNumber);
-            return pizzaOrder;
+
+            if(!pizzaOrder)
+            {
+                return NotFound();
+            }
+            return Ok(pizzaOrder);
         }
 
         [HttpPost]
         public async Task<IActionResult>  Post(PizaaItem pizzaItem)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest("Invalid data");
+            }
             await _pizzaContext.PizaaItems.AddAsync(pizzaItem);
             await _pizzaContext.SaveChangesAsync();
 
-            return CreatedAtActionResult("Get", new {id = pizzaItem.OrderNumber}, pizzaItem);
+            return Ok();
         }
 
     }
