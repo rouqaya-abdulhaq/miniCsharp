@@ -10,7 +10,7 @@ namespace pizzaApi.Controllers
 {
     [ApiController]
     [Route("[CreatePizzaItem]")]
-    public class PizzaItemController
+    public class PizzaItemController : ControllerBase
     {
 
         private readonly ILogger<PizzaItemController> _logger;
@@ -26,13 +26,22 @@ namespace pizzaApi.Controllers
         [HttpGet]
         public async  Task<ActionResult<IEnumerable<PizaaItem>>> GetPizzaItems()
         {
-            return await _pizzaContext.PizaaItems.ToListAsync();
+            var pizzas = await _pizzaContext.PizaaItem.ToListAsync();
+            if(pizzas.count == 0)
+            {
+                return NotFound();
+            }
+            return pizzas;
         }
 
         [HttpGet]
-        public string Get()
+        public IActionResult GetPizzaItem(long orderNumber)
         {
-            return "loading the pizaa ingredients";
+            var pizzaOrders = from p in _pizzaContext.PizaaItem
+                                    select p;
+
+            var pizzaOrder = pizzaOrders.Where(p => p.OrderNumber == orderNumber);
+            return pizzaOrder;
         }
 
         [HttpPost]
