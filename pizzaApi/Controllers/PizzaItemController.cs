@@ -62,5 +62,29 @@ namespace pizzaApi.Controllers
             return Ok();
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeletePizzaItem(long orderNumber)
+        {
+            if(orderNumber <=0)
+            {
+                return BadRequest("Invalid order number");
+            }
+
+            var pizzaOrders = from p in _pizzaContext.PizaaItems
+                                    select p;
+
+            var pizzaOrder = pizzaOrders.Where(p => p.OrderNumber == orderNumber);
+
+            if(pizzaOrder == null)
+            {
+                return NotFound("the order number does not match with any of the avaliable orders");
+            }
+
+            // _pizzaContext.PizaaItems.Remove(pizzaOrder);
+            await _pizzaContext.SaveChangesAsync();
+
+            return Ok();
+        }
+
     }
 }
