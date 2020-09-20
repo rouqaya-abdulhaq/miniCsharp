@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using pizzaApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace pizzaApi.Controllers
 {
@@ -80,7 +81,7 @@ namespace pizzaApi.Controllers
                 return NotFound("the order number does not match with any of the avaliable orders");
             }
 
-            // _pizzaContext.PizaaItems.Remove(pizzaOrder);
+            _pizzaContext.Attach(pizzaOrder).State = EntityState.Deleted;
             await _pizzaContext.SaveChangesAsync();
 
             return Ok();
