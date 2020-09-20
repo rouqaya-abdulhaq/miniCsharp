@@ -24,10 +24,10 @@ namespace pizzaApi.Controllers
         }
 
         [HttpGet]
-        public async  Task<ActionResult<IEnumerable<PizaaItem>>> GetPizzaItems()
+        public IActionResult GetPizzaItems()
         {
-            var pizzas = await _pizzaContext.PizaaItem.ToListAsync();
-            if(pizzas.count == 0)
+            var pizzas =  _pizzaContext.PizaaItems.ToList();
+            if(pizzas.Count == 0)
             {
                 return NotFound();
             }
@@ -37,12 +37,12 @@ namespace pizzaApi.Controllers
         [HttpGet]
         public IActionResult GetPizzaItem(long orderNumber)
         {
-            var pizzaOrders = from p in _pizzaContext.PizaaItem
+            var pizzaOrders = from p in _pizzaContext.PizaaItems
                                     select p;
 
             var pizzaOrder = pizzaOrders.Where(p => p.OrderNumber == orderNumber);
 
-            if(!pizzaOrder)
+            if(pizzaOrder == null)
             {
                 return NotFound();
             }
