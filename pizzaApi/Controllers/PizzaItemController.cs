@@ -81,11 +81,42 @@ namespace pizzaApi.Controllers
                 return NotFound("the order number does not match with any of the avaliable orders");
             }
 
-            _pizzaContext.Attach(pizzaOrder).State = EntityState.Deleted;
+            _pizzaContext.Entry(pizzaOrder).State = EntityState.Deleted;
             await _pizzaContext.SaveChangesAsync();
 
             return Ok();
         }
 
+        public async Task<IActionResult> EditPizzaItem(long orderNumber, PizaaItem pizaaItem)
+        {
+            if(orderNumber != pizaaItem.OrderNumber)
+            {
+                return BadRequest("the order number provided doesn't match the pizza's order number");
+            }
+
+            _pizzaContext.Entry(pizaaItem).State = EntityState.Modified;
+
+            try
+            {
+                await _pizzaContext.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                if(!PizzaItemExists(orderNumber))
+                {
+                    return NotFound("the provided order number doesn't match with any of the orders");
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return NoContent();
+        }
+
+        private bool PizzaItemExists(long orderNumber)
+        {
+            return _pizzaContext.PizaaItems.Any(e => e.OrderNumber == orderNumber);
+        }
     }
 }
