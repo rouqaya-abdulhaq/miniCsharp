@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using pizzaApi.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace pizzaApi.Controllers
 {
@@ -25,6 +26,7 @@ namespace pizzaApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetPizzaItems()
         {
             var pizzas =  _pizzaContext.PizaaItems.ToList();
@@ -36,6 +38,7 @@ namespace pizzaApi.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public IActionResult GetPizzaItem(long orderNumber)
         {
             var pizzaOrders = from p in _pizzaContext.PizaaItems
@@ -51,6 +54,7 @@ namespace pizzaApi.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult>  Post(PizaaItem pizzaItem)
         {
             if(!ModelState.IsValid)
@@ -64,6 +68,7 @@ namespace pizzaApi.Controllers
         }
 
         [HttpDelete]
+        [Authorize]
         public async Task<IActionResult> DeletePizzaItem(long orderNumber)
         {
             if(orderNumber <=0)
@@ -87,6 +92,8 @@ namespace pizzaApi.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        [Authorize]
         public async Task<IActionResult> EditPizzaItem(long orderNumber, PizaaItem pizaaItem)
         {
             if(orderNumber != pizaaItem.OrderNumber)
